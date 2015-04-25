@@ -38,7 +38,7 @@ MongoClient.connect(url, function(err, _db) {
 
 // Passport
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user._id);
 });
 passport.deserializeUser(function(id, done) {
   findById(id, function (err, user) {
@@ -149,6 +149,7 @@ app.get('/lines', function(req, res, next){
 
 
 app.get('/createadmin', function(req, res, next){
+  users.remove({});
   InsertUser(db, function(result){
     res.send(result);
   });
@@ -206,7 +207,7 @@ function ensureAuthenticated(req, res, next) {
   next(err);
 }
 function findById(id, fn) {
-  users.find({id : id}).toArray(function(err, docs) {
+  users.find({_id : new ObjectID(id)}).toArray(function(err, docs) {
     if(err) {
       fn(new Error('User ' + id + ' does not exist'));
     }else{
@@ -236,8 +237,7 @@ function InsertUser(db, callback) {
   var collection = db.collection('users');
   // Insert some documents
   collection.insert([
-    { id: 1, username: 'user', password: 'pass', email: 'user@example.com', role: 'USER' }, 
-    { id: 2, username: 'admin', password: 'pass', email: 'joe@example.com', role: 'ADMIN' }
+    {username: 'admin', password: '1qaz2wsx3edc', role: 'ADMIN' }
   ], function(err, result) {
     console.log("Inserted 2 documents into the document collection");
     callback(result);
