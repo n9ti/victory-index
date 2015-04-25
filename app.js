@@ -18,7 +18,7 @@ var db;
 var users;
 var lines;
 
-var dbName = 'victory-index';
+var dbName = 'victory';
 var url =  'mongodb://localhost:27017/' + dbName;
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
   url = process.env.OPENSHIFT_MONGODB_DB_URL + dbName;
@@ -146,7 +146,6 @@ app.get('/lines', function(req, res, next){
     res.send(result);
   });
 });
-
 
 
 app.get('/createadmin', function(req, res, next){
