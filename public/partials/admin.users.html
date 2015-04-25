@@ -1,0 +1,24 @@
+<h1><span class="glyphicon glyphicon-user" aria-hidden="true"></span> User</h1>
+
+<button ui-sref="admin.newUser" class="btn btn-info" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New</button>
+
+<hr>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Username</th>
+      <th>Password</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="user in users">
+      <td>{{user.id}}</td>
+      <td>{{user.username}}</td>
+      <td>****</td>
+      <td><button class="btn btn-danger" type="submit">Delete</button></td>
+    </tr>
+  </tbody>
+</table>

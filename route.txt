@@ -1,0 +1,15 @@
+stations 						: /stations
+stationInfo 				: /station/:id  		->  /203
+stationMap 					: /map/:id  				->  /map/203
+
+
+login 							: /login
+
+admin 							: /admin
+admin.stations 			: /admin/stations
+admin.newStation 		: /admin/newStation
+admin.stationInfo 	: /admin/:stationId
+
+
+admin.users 				: /admin/users
+admon.newUser 			: /admin/newUser
