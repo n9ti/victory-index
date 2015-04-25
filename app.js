@@ -147,14 +147,6 @@ app.get('/lines', function(req, res, next){
 });
 
 
-app.get('/createadmin', function(req, res, next){
-  users.remove({});
-  InsertUser(db, function(result){
-    res.send(result);
-  });
-});
-
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -227,19 +219,6 @@ function findByUsername(username, fn) {
         return fn(null, null);
       }
     }
-  });
-}
-
-// User
-function InsertUser(db, callback) {
-  // Get the documents collection
-  var collection = db.collection('users');
-  // Insert some documents
-  collection.insert([
-    { id: new ObjectID(), username: 'admin', password: '1qaz2wsx3edc', role: 'ADMIN' }
-  ], function(err, result) {
-    console.log("Inserted 2 documents into the document collection");
-    callback(result);
   });
 }
 
