@@ -18,10 +18,9 @@ var db;
 var users;
 var lines;
 
-var dbName = 'victory';
-var url =  'mongodb://localhost:27017/' + dbName;
+var url =  'mongodb://localhost:27017/victory-index';
 if(process.env.OPENSHIFT_MONGODB_DB_URL){
-  url = process.env.OPENSHIFT_MONGODB_DB_URL + dbName;
+  url = process.env.OPENSHIFT_MONGODB_DB_URL + 'victory';
 }
 
 MongoClient.connect(url, function(err, _db) {
@@ -38,7 +37,7 @@ MongoClient.connect(url, function(err, _db) {
 
 // Passport
 passport.serializeUser(function(user, done) {
-  done(null, user._id);
+  done(null, user.id);
 });
 passport.deserializeUser(function(id, done) {
   findById(id, function (err, user) {
@@ -207,7 +206,7 @@ function ensureAuthenticated(req, res, next) {
   next(err);
 }
 function findById(id, fn) {
-  users.find({_id : new ObjectID(id)}).toArray(function(err, docs) {
+  users.find({id : new ObjectID(id)}).toArray(function(err, docs) {
     if(err) {
       fn(new Error('User ' + id + ' does not exist'));
     }else{
@@ -237,7 +236,7 @@ function InsertUser(db, callback) {
   var collection = db.collection('users');
   // Insert some documents
   collection.insert([
-    {username: 'admin', password: '1qaz2wsx3edc', role: 'ADMIN' }
+    { id: new ObjectID(), username: 'admin', password: '1qaz2wsx3edc', role: 'ADMIN' }
   ], function(err, result) {
     console.log("Inserted 2 documents into the document collection");
     callback(result);
@@ -249,9 +248,8 @@ function deleteUser(id) {
 }
 
 function createUser(data){
-  users.insert(data,function(err, result) {
-
-  });
+  data.id = new ObjectID();
+  users.insert(data,function(err, result) {});
 }
 
 // Line
