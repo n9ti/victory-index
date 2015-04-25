@@ -2,6 +2,6 @@
 victory-index
 
 ```
-nodemon ./bin/www
 mongod --dbpath=./data
+nodemon ./bin/www
 ```

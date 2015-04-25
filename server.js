@@ -18,7 +18,12 @@ var db;
 var users;
 var lines;
 
-var url =  'mongodb://admin:vB761Q1MabYi@$OPENSHIFT_MONGODB_DB_HOST:$OPENSHIFT_MONGODB_DB_PORT/victory-index'; //'mongodb://localhost:27017/victory-index';
+var dbName = 'victory-index';
+var url =  'mongodb://localhost:27017/' + dbName;
+if(process.env.OPENSHIFT_MONGODB_DB_URL){
+  url = process.env.OPENSHIFT_MONGODB_DB_URL + dbName;
+}
+
 MongoClient.connect(url, function(err, _db) {
   console.log("Connected correctly to server");
   db = _db;
