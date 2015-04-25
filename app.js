@@ -149,7 +149,11 @@ app.get('/lines', function(req, res, next){
 
 
 
-
+app.get('/createadmin', function(req, res, next){
+  InsertUser(db, function(result){
+    res.send(result);
+  });
+});
 
 
 // catch 404 and forward to error handler
