@@ -5,8 +5,6 @@
   <span id="inputSuccess5Status" class="sr-only">(success)</span>
 </div>
 
-<a ui-sref="lineMap">mppppp</a>
-
 <div ng-repeat="line in lines" ui-sref="lineInfo({id: line._id})">
   <h2>{{line._id}}</h2>
   <span ng-repeat="number in line.lines" class="line-number {{number.victoryCorner}}"><b>{{number.number}}</b></span>
