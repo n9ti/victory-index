@@ -1,19 +1,14 @@
-<h1>Stations</h1>
+<div class="form-group has-feedback">
+  <label class="control-label sr-only" for="inputSuccess5">Hidden label</label>
+  <input type="text" class="form-control" ng-model="q" ng-keyup="search(q)" id="inputSuccess5" aria-describedby="inputSuccess5Status" placeholder="ค้นหา">
+  <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+  <span id="inputSuccess5Status" class="sr-only">(success)</span>
+</div>
 
-<table class="table">
-  <caption>Optional table caption.</caption>
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>สาย</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ng-repeat="line in lines">
-      <td>{{$index + 1}}</td>
-      <td>{{line.id}}</td>
-      <td><button ui-sref="lineInfo({id:line.id})" class="btn btn-default" type="submit">Go</button></td>
-    </tr>
-  </tbody>
-</table>
+<a ui-sref="lineMap">mppppp</a>
+
+<div ng-repeat="line in lines" ui-sref="lineInfo({id: line._id})">
+  <h2>{{line._id}}</h2>
+  <span ng-repeat="number in line.lines" class="line-number {{number.victoryCorner}}"><b>{{number.number}}</b></span>
+  <hr>
+</div>

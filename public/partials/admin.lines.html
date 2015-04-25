@@ -1,6 +1,6 @@
 <h1><span class="glyphicon glyphicon-record" aria-hidden="true"></span> Lines</h1>
 
-<button ui-sref="admin.newUser" class="btn btn-info" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New</button>
+<button ui-sref="admin.newLine" class="btn btn-info" type="submit"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New</button>
 
 <hr>
 
@@ -9,19 +9,22 @@
     <tr>
       <th>#</th>
       <th>สาย</th>
-      <th>ต้นทาง</th>
       <th>ปลายทาง</th>
       <th>ประเภทรถ</th>
       <th>เบอร์ติดต่อ</th>
       <th>victory-corner</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="user in users">
-      <td>{{user.id}}</td>
-      <td>{{user.username}}</td>
-      <td>****</td>
-      <td><button class="btn btn-danger" type="submit">Delete</button></td>
+    <tr ng-repeat="line in lines">
+      <td>{{$index + 1}}</td>
+      <td>{{line.number}}</td>
+      <td>{{line.destination}}</td>
+      <td>{{line.type}}</td>
+      <td>{{line.tel}}</td>
+      <td>{{line.victoryCorner}}</td>
+      <td><button class="btn btn-danger" ng-click="delete(line._id)">Delete</button></td>
     </tr>
   </tbody>
 </table>

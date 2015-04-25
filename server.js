@@ -10,7 +10,23 @@ var LocalStrategy   = require('passport-local').Strategy;
 
 var session         = require('express-session');
 
+var MongoClient     = require('mongodb').MongoClient;
+var ObjectID        = require('mongodb').ObjectID;
 
+// Mongodb
+var db;
+var users;
+var lines;
+
+var url = 'mongodb://localhost:27017/victory-index';
+MongoClient.connect(url, function(err, _db) {
+  console.log("Connected correctly to server");
+  db = _db;
+  users = db.collection('users');
+  lines = db.collection('lines');
+});
+
+// Passport
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -36,32 +52,6 @@ passport.use(new LocalStrategy(
     });
   }
 ));
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.send('Error');
-}
-var users = [
-  { id: 1, username: 'user', password: 'pass', email: 'bob@example.com' }, 
-  { id: 2, username: 'joe', password: 'birthday', email: 'joe@example.com' }
-];
-function findById(id, fn) {
-  var idx = id - 1;
-  if (users[idx]) {
-    fn(null, users[idx]);
-  } else {
-    fn(new Error('User ' + id + ' does not exist'));
-  }
-}
-
-function findByUsername(username, fn) {
-  for (var i = 0, len = users.length; i < len; i++) {
-    var user = users[i];
-    if (user.username === username) {
-      return fn(null, user);
-    }
-  }
-  return fn(null, null);
-}
 
 
 var app             = express();
@@ -84,16 +74,72 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.get('/api', ensureAuthenticated, function(req, res, next){
-  res.send('API');
-});
-
 app.post('/login', 
   passport.authenticate('local'),
   function(req, res) {
-    res.send({ user: req.user });
+    res.redirect('/#/admin/lines');
+});
+
+app.get('/logout', function(req, res){
+  req.logout();
+  res.redirect('/#/login');
+});
+
+/*---------------------------------------------
+*                    API
+*--------------------------------------------*/
+
+app.get('/api/users', ensureAdmin, function(req, res, next){
+  users.find({role: { $ne: 'ADMIN' }}).toArray(function(err, result){
+    res.send(result);
   });
+});
+
+app.delete('/api/users/:id', ensureAdmin, function(req, res, next){
+  deleteUser(req.params.id);
+  res.send('ok');
+});
+
+app.post('/api/users', ensureAdmin, function(req, res, next){
+  createUser(req.body);
+  res.send('ok');
+});
+
+// ---------------------
+
+app.post('/api/lines', ensureAuthenticated, function(req, res, next){
+  createLine(req.body);
+  res.send('ok');
+});
+
+app.delete('/api/lines/:id', ensureAuthenticated, function(req, res, next){
+  deleteLine(req.params.id);
+  res.send('ok');
+});
+
+app.get('/api/lines', ensureAuthenticated, function(req, res, next){
+  lines.find({}).toArray(function(err, result){
+    res.send(result);
+  });
+});
+
+//-----------------
+
+app.get('/lines/:q', function(req, res, next){
+  getLines(req.params.q, function(result){
+    res.send(result);
+  });
+});
+
+app.get('/lines', function(req, res, next){
+  getLines(null, function(result){
+    res.send(result);
+  });
+});
+
+
+
+
 
 
 // catch 404 and forward to error handler
@@ -129,3 +175,110 @@ app.use(function(err, req, res, next) {
 
 
 module.exports = app;
+
+/*---------------------------------------------
+*                    Function
+*--------------------------------------------*/
+
+function ensureAdmin(req, res, next) {
+  if (req.isAuthenticated() && req.user.role == 'ADMIN') { return next(); }
+  var err = new Error('Unauthorized');
+  err.status = 401;
+  next(err);
+}
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) { return next(); }
+  var err = new Error('Unauthorized');
+  err.status = 401;
+  next(err);
+}
+function findById(id, fn) {
+  users.find({id : id}).toArray(function(err, docs) {
+    if(err) {
+      fn(new Error('User ' + id + ' does not exist'));
+    }else{
+      if(docs[0]) {
+        fn(null, docs[0]);
+      }
+    }
+  });
+}
+function findByUsername(username, fn) {
+  users.find({username : username}).toArray(function(err, docs) {
+    if(err) {
+      return fn(null, null);
+    }else{
+      if(docs[0]) {
+        return fn(null, docs[0]);
+      }else{
+        return fn(null, null);
+      }
+    }
+  });
+}
+
+// User
+function InsertUser(db, callback) {
+  // Get the documents collection
+  var collection = db.collection('users');
+  // Insert some documents
+  collection.insert([
+    { id: 1, username: 'user', password: 'pass', email: 'user@example.com', role: 'USER' }, 
+    { id: 2, username: 'admin', password: 'pass', email: 'joe@example.com', role: 'ADMIN' }
+  ], function(err, result) {
+    console.log("Inserted 2 documents into the document collection");
+    callback(result);
+  });
+}
+
+function deleteUser(id) {
+  users.remove({_id: new ObjectID(id)});
+}
+
+function createUser(data){
+  users.insert(data,function(err, result) {
+
+  });
+}
+
+// Line
+function createLine(data){
+  lines.insert(data,function(err, result) {
+
+  });
+}
+function deleteLine(id) {
+  lines.remove({_id: new ObjectID(id)});
+}
+
+
+function getLines(q, callback){
+  if(q) {
+    q = { destination: {'$regex' : q}};
+  }else {
+    q = {};
+  }
+  lines.aggregate(
+    [
+      {
+        $match: q
+      },
+      {
+        $group:
+        {
+          _id: "$destination",
+          lines: { $push:  { 
+            number: "$number", 
+            victoryCorner: "$victoryCorner",
+            tel: "$tel"
+          } }
+        }
+      }
+    ], function(err, result) {
+      callback(result);
+    }
+  );
+}
+
+
+

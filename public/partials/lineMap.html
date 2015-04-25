@@ -1,1 +1,10 @@
-<h1>Map : {{id}}</h1>
+<h1 class="line-number">{{id}}</h1>
+<button class="btn btn-default" ng-click="move()">Move</button>
+
+<ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options">
+  <ui-gmap-marker coords="myloc.coords" options="myloc.options" events="myloc.events" idkey="myloc.id">
+  </ui-gmap-marker>
+
+  <ui-gmap-marker coords="station.coords" options="station.options" events="station.events" idkey="station.id">
+  </ui-gmap-marker>
+</ui-gmap-google-map>

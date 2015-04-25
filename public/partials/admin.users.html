@@ -15,10 +15,10 @@
   </thead>
   <tbody>
     <tr ng-repeat="user in users">
-      <td>{{user.id}}</td>
+      <td>{{$index+1}}</td>
       <td>{{user.username}}</td>
       <td>****</td>
-      <td><button class="btn btn-danger" type="submit">Delete</button></td>
+      <td><button class="btn btn-danger" type="submit" ng-click="delete(user._id)">Delete</button></td>
     </tr>
   </tbody>
 </table>

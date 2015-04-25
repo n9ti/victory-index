@@ -1,3 +1,16 @@
-<h1>{{id}}</h1>
-<button ui-sref="lineMap({id:id})" class="btn btn-default" type="submit">Map</button>
+<div ng-repeat="line in lines" ui-sref="lineInfo({id: line._id})">
+  <h2>{{line._id}}</h2>
+  <br>
+  <div ng-repeat="number in line.lines">
+  	<span class="line-number {{number.victoryCorner}}">
+  		<b>{{number.number}}</b>
+  	</span>
+  	<b>{{number.tel}}</b> <a href="" ng-click="gotoMap(number.number)">map</a>
+  	<br>
+  	<br>
+  	<br>
+  </div>
+  <br>
+  <hr>
+</div>
 

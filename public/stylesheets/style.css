@@ -10,3 +10,44 @@ a {
 body > .admin-container {
 	padding-top: 60px;
 }
+
+.line-number {
+	border: solid 3px;
+	padding: 3px 8px;
+	border-radius: 6px;
+	margin: 5px;
+}
+.A {
+	border-color: #39B54A;
+	color: #39B54A;
+}
+.B {
+	border-color: #ED1165;
+	color: #ED1165;
+}
+.C {
+	border-color: #F7941E;
+	color: #F7941E;
+}
+.D {
+	border-color: #213F9A;
+	color: #213F9A;
+}
+.E {
+	border-color: #AB499B;
+	color: #AB499B;
+}
+.F {
+	border-color: #02B29D;
+	color: #02B29D;
+}
+.G {
+	border-color: #F598B1;
+	color: #F598B1;
+}
+.H {
+	border-color: #00ACDC;
+	color: #00ACDC;
+}
+
+.angular-google-map-container { height: 400px; }
