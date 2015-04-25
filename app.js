@@ -25,6 +25,11 @@ if(process.env.OPENSHIFT_MONGODB_DB_URL){
 }
 
 MongoClient.connect(url, function(err, _db) {
+  if(err) {
+    console.log(err);
+    return 0;
+  }
+
   console.log("Connected correctly to server");
   db = _db;
   users = db.collection('users');
